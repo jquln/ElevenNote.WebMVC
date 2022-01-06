@@ -34,19 +34,26 @@ namespace ElevenNote.WebMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(NoteCreate model)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) return View(model);
+
+            var service = CreateNoteService();
+
+            if (service.CreateNote(model))
             {
-                return View(model);
-            }
+                TempData["SaveResult"] = "Your note was created.";
+                return RedirectToAction("Index");
+            };
+            ModelState.AddModelError("", "Note could not be created. ");
 
-            var userId = Guid.Parse(User.Identity.GetUserId());
-            var service = new NoteService(userId);
+            return View(model);
 
-            service.CreateNote(model);
-
-            return RedirectToAction("Index");
-            
         }
 
+        private NoteService CreateNoteService()
+        {
+            var userId = Guid.Parse(User.Identity.GetUserId());
+            var service = new NoteService(userId);
+            return service;
+        }
     }
 }
