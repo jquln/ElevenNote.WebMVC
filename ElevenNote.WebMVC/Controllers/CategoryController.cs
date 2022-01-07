@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace ElevenNote.WebMVC.Controllers
 {
+    [Authorize]
     public class CategoryController : Controller
     {
         // GET: Category
